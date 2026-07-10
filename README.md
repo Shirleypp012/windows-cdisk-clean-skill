@@ -39,12 +39,6 @@
 
 <br>
 
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/10362943/211234248-3a409d8d-4284-4e88-a356-957983573658.png" alt="AI Disk Clean Preview" width="100%" style="max-width: 960px; border-radius: 16px; border: 1px solid #E2E8F0;">
-</p>
-
-<br>
-<br>
 
 ---
 
