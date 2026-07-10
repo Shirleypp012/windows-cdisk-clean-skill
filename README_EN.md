@@ -1,3 +1,4 @@
+🌏 简体中文｜English Version
 <p align="center">
   <img src="https://img.shields.io/badge/version-1.0.0-2563EB?style=flat-square" alt="Version">
   <img src="https://img.shields.io/badge/license-MIT-22C55E?style=flat-square" alt="License">
