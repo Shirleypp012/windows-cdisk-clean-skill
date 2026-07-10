@@ -1,6 +1,5 @@
 <p align="right">
-  <a href="./README.md" title="简体中文"><img src="https://img.shields.io/badge/中文-9CA3AF?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiPjxyZWN0IHg9IjIiIHk9IjQiIHdpZHRoPSIyMCIgaGVpZ2h0PSIxNiIgcng9IjIiLz48bGluZSB4MT0iMiIgeDE9IjIyIiB5MT0iOC45IiB5Mj0iOC45Ii8+PGxpbmUgeDE9IjIiIHgxPSIyMiIgeTE9IjEzLjYiIHkyPSIxMy42Ii8+PC9zdmc+" alt="中文"></a>
-  <a href="./README_EN.md" title="English"><img src="https://img.shields.io/badge/English-2563EB?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiPjxyZWN0IHg9IjIiIHk9IjQiIHdpZHRoPSIyMCIgaGVpZ2h0PSIxNiIgcng9IjIiLz48bGluZSB4MT0iMiIgeDE9IjIyIiB5MT0iOC45IiB5Mj0iOC45Ii8+PGxpbmUgeDE9IjIiIHgxPSIyMiIgeTE9IjEzLjYiIHkyPSIxMy42Ii8+PC9zdmc+" alt="English"></a>
+  <strong>🇨🇳 简体中文</strong> &nbsp;|&nbsp; <a href="./README_EN.md">🇺🇸 English</a>
 </p>
 
 <br>
