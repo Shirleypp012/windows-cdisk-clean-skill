@@ -341,21 +341,7 @@ windows-cdisk-clean-skill/
 ├── README_EN.md                # English README (this file)
 ├── Windows-C盘智能安全清理大师.skill  # Universal Skill format — GUI clients
 ├── LICENSE                     # MIT License
-│
-├── scripts/                    # Standalone executable scripts
-│   ├── scan.bat               #   Full disk scan
-│   ├── auto-clean.bat         #   Safe auto-cleanup
-│   └── advanced-clean.bat     #   High-risk cleanup (requires confirmation)
-│
-├── docs/                       # Extended docs
-│   ├── guide.md               #   Complete usage guide
-│   ├── faq.md                 #   Detailed FAQ
-│   ├── risk-levels.md         #   Triple-tier classification reference
-│   └── screenshots/           #   📸 Product screenshots (placeholder)
-│
-└── .github/                    # GitHub community config
-    ├── ISSUE_TEMPLATE/         #   Issue templates
-    └── PULL_REQUEST_TEMPLATE.md # PR template
+
 ```
 
 <br>
@@ -396,8 +382,8 @@ git clone https://github.com/Shirleypp012/windows-cdisk-clean-skill.git
 
 | Client | How to Import |
 |--------|---------------|
-| **Claude Code** | Place `windows-cdisk-clean-skill/` into `.claude/skills/` |
-| **Cursor** | Settings → Skills → Import → Select `SKILL.md` |
+| **Claude Code** | Place `cdisk-clean-wyp/` into `.claude/skills/` |
+| **Cursor** | Settings → Skills → Import → (After extracting cdisk-clean-wyp.rar, you will get a folder containing the SKILL.md file.)Select `SKILL.md` |
 | **OpenAI Codex** | Paste `SKILL.md` content into custom instructions |
 | **Other Clients** | Import `Windows-C盘智能安全清理大师.skill` file |
 
@@ -599,8 +585,12 @@ MIT License · Copyright (c) 2024 Shirley
   &nbsp;·&nbsp;
   <a href="https://github.com/Shirleypp012/windows-cdisk-clean-skill">⭐ Star this Project</a>
 </p>
-
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/15eae9f1-38f3-4332-a974-2968330cf9a7" 
+       alt="微信dd" 
+       style="width: 75%; max-width: 800px; border-radius: 12px; box-shadow: 0 2px 12px #00000012;">
+</p>
 <br>
 <p align="center">
-  <sub>© 2024 Shirley · windows-cdisk-clean-skill · MIT License</sub>
+  <sub>© 2026 Shirley · windows-cdisk-clean-skill · MIT License</sub>
 </p>
