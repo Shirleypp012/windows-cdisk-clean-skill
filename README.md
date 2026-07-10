@@ -1,3 +1,4 @@
+🌏 English Version | [切换至英文 README](./README_EN.md)
 # Windows-C盘智能安全清理大师 Skill
 ## 项目简介
 本项目专为 **Windows 系统** 打造，后续会迭代开发 macOS 适配版本。仓库提供两套完整资源，分别适配网页端、桌面IDE客户端、CLI终端，用于Windows C盘空间扫描、分级安全清理。
