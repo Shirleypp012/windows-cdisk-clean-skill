@@ -376,8 +376,8 @@ git clone https://github.com/Shirleypp012/windows-cdisk-clean-skill.git
 
 | 客户端 | 导入方式 |
 |--------|----------|
-| **Claude Code** | 将 `windows-cdisk-clean-skill/` 放入 `.claude/skills/` 目录 |
-| **Cursor** | Settings → Skills → Import → 选择 `SKILL.md` |
+| **Claude Code** | 将 `windows-cdisk-clean-wyp/`解压后的文件夹 放入 `.claude/skills/` 目录 |
+| **Cursor** | Settings → Skills → Import → （把rar文件解压后文件里里有SKILL.md）选择 `SKILL.md` |
 | **OpenAI Codex** | 将 `SKILL.md` 内容粘贴到自定义指令中 |
 | **通用客户端** | 导入 `Windows-C盘智能安全清理大师.skill` 文件 |
 
@@ -579,6 +579,13 @@ MIT License · Copyright (c) 2024 Shirley
   &nbsp;·&nbsp;
   <a href="https://github.com/Shirleypp012/windows-cdisk-clean-skill">⭐ 给项目点个 Star</a>
 </p>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/15eae9f1-38f3-4332-a974-2968330cf9a7" 
+       alt="微信dd" 
+       style="width: 75%; max-width: 800px; border-radius: 12px; box-shadow: 0 2px 12px #00000012;">
+</p>
+
+
 
 <br>
 <p align="center">
