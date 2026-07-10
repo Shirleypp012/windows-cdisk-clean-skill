@@ -45,15 +45,6 @@
 
 <br>
 
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://placehold.co/960x540/0F172A/94A3B8?text=Coming+Soon&font=Inter">
-    <img src="https://placehold.co/960x540/F8FAFC/64748B?text=Coming+Soon&font=Inter" alt="Product Screenshot" width="100%" style="max-width: 960px; border-radius: 16px; border: 1px solid #E2E8F0;">
-  </picture>
-</p>
-
-<br>
-<br>
 
 ---
 
