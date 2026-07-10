@@ -1,5 +1,5 @@
 <p align="right">
-  <strong>🇨🇳 简体中文</strong> &nbsp;|&nbsp; <a href="./README_EN.md">🇺🇸 English</a>
+  <a href="./README.md">🇨🇳 简体中文</a> &nbsp;|&nbsp; <strong>🇺🇸 English</strong>
 </p>
 
 <br>
