@@ -335,21 +335,7 @@ windows-cdisk-clean-skill/
 ├── README_EN.md                # English README
 ├── Windows-C盘智能安全清理大师.skill  # 通用 Skill 格式 — GUI 客户端导入
 ├── LICENSE                     # MIT 许可证
-│
-├── scripts/                    # 独立可执行脚本
-│   ├── scan.bat               #   全盘扫描脚本
-│   ├── auto-clean.bat         #   安全自动清理脚本
-│   └── advanced-clean.bat     #   高危项目清理脚本（需确认）
-│
-├── docs/                       # 扩展文档
-│   ├── guide.md               #   完整使用指南
-│   ├── faq.md                 #   常见问题详解
-│   ├── risk-levels.md         #   三级分类规则参考
-│   └── screenshots/           #   📸 产品截图（预留）
-│
-└── .github/                    # GitHub 社区配置
-    ├── ISSUE_TEMPLATE/         #   Issue 模板
-    └── PULL_REQUEST_TEMPLATE.md # PR 模板
+
 ```
 
 <br>
@@ -596,5 +582,5 @@ MIT License · Copyright (c) 2024 Shirley
 
 <br>
 <p align="center">
-  <sub>© 2024 Shirley · windows-cdisk-clean-skill · MIT License</sub>
+  <sub>© 2026 Shirley · windows-cdisk-clean-skill · MIT License</sub>
 </p>
