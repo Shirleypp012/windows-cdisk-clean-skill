@@ -1,0 +1,814 @@
+---
+name: Windows-C盘智能安全清理大师
+version: 1.0.0
+platforms:
+  - Claude
+  - Cursor
+  - OpenAI Codex
+  - 所有支持 Skill 的 AI 客户端
+license: MIT
+author: Open Source Community
+description: >
+  先扫描分析 → 风险分级 → 安全文件自动清理 → 高危文件人工确认，
+  零误删系统文件，全程使用 Windows 官方自带工具，不推荐任何第三方软件。
+triggers:
+  - C盘清理
+  - 清理C盘
+  - C盘满了
+  - C盘瘦身
+  - 释放C盘空间
+  - 磁盘清理
+  - C盘空间不足
+  - 清理系统垃圾
+  - C盘爆满
+  - 系统盘清理
+tags:
+  - windows
+  - disk-cleanup
+  - system-maintenance
+  - 磁盘清理
+  - 系统优化
+category: 系统维护
+language: zh-CN
+---
+
+# Windows C盘智能安全清理大师 V1.0
+
+## 🎯 核心定位
+
+先扫描分析 → 风险分级 → 安全文件自动清理 → 高危文件人工确认 → 零误删系统文件
+
+全程仅使用 Windows 官方自带工具，不推荐任何第三方软件。
+
+---
+
+## 🚫 绝对铁律（每次执行前必读）
+
+```
+铁律 1：绝对不直接无脑删除任何文件
+铁律 2：必须先生成全量扫描报告，再进行任何操作
+铁律 3：严禁触碰 System32、SysWOW64、系统驱动目录
+铁律 4：严禁修改注册表
+铁律 5：严禁删除用户个人文档目录下的任何文件（Downloads 除外，但需确认）
+铁律 6：未分类完成前，不得执行任何删除操作
+铁律 7：高危项目的删除操作必须等待用户明确输入"确认删除"后执行
+```
+
+---
+
+## 📋 风险三级分类体系
+
+### 🛑 一级 · 绝对禁止删除（系统核心保护区）
+
+以下路径/文件类型**无论多大，绝对不可删除**：
+
+```
+# 系统内核
+C:\Windows\System32\*           # Windows 核心系统文件
+C:\Windows\SysWOW64\*           # 64位系统兼容层
+C:\Windows\WinSxS\*             # 组件存储（不可直接删除）
+C:\Windows\Boot\*               # 系统引导
+C:\Windows\INF\*                # 驱动安装信息
+C:\Windows\SystemResources\*    # 系统资源文件
+C:\Windows\servicing\*          # 系统服务栈
+
+# 系统文件
+C:\bootmgr                      # 引导管理器
+C:\pagefile.sys                 # 虚拟内存文件
+C:\swapfile.sys                 # 交换文件
+
+# 系统驱动
+C:\Windows\System32\drivers\*   # 驱动文件
+C:\Windows\System32\DriverStore\* # 驱动存储
+
+# 注册表核心
+HKEY_LOCAL_MACHINE\SYSTEM\*     # 系统配置
+HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\* # Windows 核心配置
+
+# 用户核心数据
+C:\Users\*\Documents\*          # 用户文档
+C:\Users\*\Pictures\*           # 用户图片
+C:\Users\*\Desktop\*            # 桌面文件（大型文件会放入"谨慎清单"）
+C:\Users\*\AppData\Roaming\Microsoft\* # 微软应用数据
+```
+
+🔒 **保护机制**：扫描时自动跳过以上路径，不会出现在清理建议中。
+
+---
+
+### ✅ 二级 · 安全可自动清理（无需用户确认）
+
+以下内容**可自动清理**，不会影响系统正常运行：
+
+| 序号 | 清理项目 | 典型路径 | 预计释放空间 | 清理方法 |
+|------|----------|----------|-------------|----------|
+| 1 | 系统临时文件 | `C:\Windows\Temp\*` | 1-10 GB | `del /q /s` |
+| 2 | 用户临时文件 | `C:\Users\*\AppData\Local\Temp\*` | 1-20 GB | `del /q /s` |
+| 3 | Windows 更新缓存 | `C:\Windows\SoftwareDistribution\Download\*` | 1-15 GB | `del /q /s` |
+| 4 | Windows 更新清理 | 磁盘清理工具 → Windows 更新清理 | 2-20 GB | `cleanmgr /sageset` |
+| 5 | 系统错误内存转储 | `C:\Windows\Minidump\*` `C:\Windows\MEMORY.DMP` | 1-50 GB | `del /q` |
+| 6 | 系统错误报告 | `C:\ProgramData\Microsoft\Windows\WER\*` | 0.5-5 GB | `del /q /s` |
+| 7 | 缩略图缓存 | `C:\Users\*\AppData\Local\Microsoft\Windows\Explorer\thumbcache_*.db` | 0.5-5 GB | `del /q` |
+| 8 | 浏览器缓存 (Edge) | `C:\Users\*\AppData\Local\Microsoft\Edge\User Data\Default\Cache\*` | 0.5-5 GB | `del /q /s` |
+| 9 | 浏览器缓存 (Chrome) | `C:\Users\*\AppData\Local\Google\Chrome\User Data\Default\Cache\*` | 0.5-5 GB | `del /q /s` |
+| 10 | 回收站 | 清空所有驱动器回收站 | 不定 | `rd /s C:\$Recycle.Bin` |
+| 11 | 系统日志文件 | `C:\Windows\Logs\*` `C:\Windows\Logs\CBS\*.log` | 1-5 GB | `del /q /s` |
+| 12 | 预读取文件 | `C:\Windows\Prefetch\*` | 0.5-2 GB | `del /q /s` |
+| 13 | DNS 缓存 | 内存缓存 | 少量 | `ipconfig /flushdns` |
+| 14 | Delivery Optimization | `C:\Windows\ServiceProfiles\NetworkService\AppData\Local\Microsoft\Windows\DeliveryOptimization\Cache\*` | 1-10 GB | `del /q /s` |
+| 15 | 字体缓存 | `C:\Windows\ServiceProfiles\LocalService\AppData\Local\FontCache\*` | 0.1-1 GB | `del /q /s` |
+| 16 | 空文件夹（非系统目录） | 全盘扫描 | 极少 | `dir /s /b /ad` + 判断 |
+| 17 | 无效快捷方式 | 桌面 + 开始菜单 | 极少 | 逐个检查删除 |
+| 18 | 软件安装包残留 | `C:\ProgramData\Package Cache\*` | 1-5 GB | `del /q /s` (部分) |
+| 19 | 过期 Windows Defender 定义 | `C:\ProgramData\Microsoft\Windows Defender\Scans\History\*` | 0.5-2 GB | `del /q /s` |
+
+---
+
+### ⚠️ 三级 · 谨慎高危项目（必须人工确认）
+
+以下项目**绝不自动清理**，必须用户逐条确认后执行：
+
+| 序号 | 项目 | 路径/方法 | 预估大小 | 风险说明 |
+|------|------|-----------|----------|----------|
+| 1 | 休眠文件 | `C:\hiberfil.sys` | = 内存大小的 40-75% | 关闭休眠功能后自动消失。删除后无法使用"快速启动"和"休眠" |
+| 2 | 虚拟内存文件 | `C:\pagefile.sys` | 1-32 GB | 不建议删除，可调整大小或迁移到其他盘 |
+| 3 | 系统还原点 | 系统保护 → 配置 → 删除 | 1-20 GB | 删除后将无法恢复到之前的系统状态 |
+| 4 | Windows.old | `C:\Windows.old\*` | 10-30 GB | 系统大版本升级后的旧系统备份；删除后无法回滚 |
+| 5 | 下载文件夹 | `C:\Users\*\Downloads\*` | 不定 | 需用户自行判断哪些文件不再需要 |
+| 6 | 桌面大文件 (>100MB) | `C:\Users\*\Desktop\` | 不定 | 建议移动到其他盘，禁止直接删除 |
+| 7 | 微信/QQ 缓存 | `C:\Users\*\Documents\WeChat Files\*\FileStorage\*` | 5-50 GB | 聊天记录相关，谨慎清理 |
+| 8 | 企业微信/WPS 缓存 | `C:\Users\*\AppData\Roaming\*` 相关目录 | 2-10 GB | 可能包含工作文件缓存 |
+| 9 | 大型软件缓存 | Adobe/Premiere/After Effects 等缓存目录 | 5-100 GB | 清理前需确认项目是否需要 |
+| 10 | Steam/Epic 游戏库 | `C:\Program Files (x86)\Steam\steamapps\*` | 10-500 GB | 建议迁移而非删除 |
+| 11 | OneDrive 本地缓存 | `C:\Users\*\OneDrive\*` | 不定 | 确认文件已同步到云端后再清理本地副本 |
+| 12 | Docker 镜像/容器 | Docker Desktop 数据目录 | 5-50 GB | `docker system prune -a` |
+
+---
+
+## 🔧 工具箱（仅使用 Windows 官方工具）
+
+```
+工具 1: cleanmgr.exe          → Windows 磁盘清理（支持 /sageset /sagerun）
+工具 2: dism.exe              → 组件清理 (/Cleanup-Image /StartComponentCleanup)
+工具 3: powercfg.exe          → 休眠管理 (/h off 关闭休眠)
+工具 4: vssadmin.exe          → 卷影副本管理 (list shadows / delete shadows)
+工具 5: ipconfig /flushdns    → 刷新 DNS 缓存
+工具 6: wmic.exe              → 系统信息查询
+工具 7: fsutil.exe            → 文件系统工具
+工具 8: Storage Sense (存储感知) → 设置 → 系统 → 存储 → 存储感知
+工具 9: PowerShell Get-ChildItem → 大文件扫描
+工具 10: compact.exe          → 文件压缩 (/compactOS)
+```
+
+---
+
+## 🚦 执行工作流（强制执行顺序）
+
+```
+┌─────────────────────────────────────────────────┐
+│                Phase 0: 环境检测                   │
+│  · 检测操作系统版本                                │
+│  · 检测可用磁盘空间                                │
+│  · 检测当前权限（管理员/普通用户）                    │
+│  · 判断可执行的操作范围                              │
+└──────────────────────┬──────────────────────────┘
+                       ↓
+┌─────────────────────────────────────────────────┐
+│             Phase 1: 全盘扫描与分析                 │
+│  · 扫描 C 盘各目录空间占用                          │
+│  · 识别可安全清理的文件                             │
+│  · 识别高危大型文件                                │
+│  · 生成完整扫描报告                                │
+└──────────────────────┬──────────────────────────┘
+                       ↓
+┌─────────────────────────────────────────────────┐
+│             Phase 2: 风险分级                      │
+│  · 将扫描结果按三级分类体系归类                       │
+│  · 计算每类预计可释放空间                           │
+│  · 标记绝对禁止触碰的项目                           │
+└──────────────────────┬──────────────────────────┘
+                       ↓
+┌─────────────────────────────────────────────────┐
+│          Phase 3: 输出完整清理报告                   │
+│  · 六段式固定格式输出                              │
+│  · 安全项目：列出并准备自动执行                       │
+│  · 高危项目：逐条说明风险，等待用户确认                │
+└──────────────────────┬──────────────────────────┘
+                       ↓
+              ┌────────┴────────┐
+              ↓                  ↓
+    ┌──────────────────┐  ┌──────────────────┐
+    │ Phase 4A: 自动清理 │  │ Phase 4B: 等待确认 │
+    │ 逐项执行安全清单    │  │ 展示高危清单       │
+    │ 实时输出执行结果    │  │ 用户逐条回复       │
+    └────────┬─────────┘  │ "确认删除"后执行   │
+              ↓            └────────┬─────────┘
+              │                     ↓
+              └──────────┬──────────┘
+                         ↓
+┌─────────────────────────────────────────────────┐
+│             Phase 5: 最终汇总报告                  │
+│  · 已清理内容清单 + 释放空间汇总                     │
+│  · 用户已确认待处理内容                             │
+│  · C 盘空间前后对比                                │
+│  · 长期维护建议                                   │
+└─────────────────────────────────────────────────┘
+```
+
+---
+
+## 📊 固定六段式输出格式
+
+### 第一段：🛑 红线警示
+
+输出绝对不可触碰的系统核心文件清单，标注"**以下内容已自动跳过，不进行任何操作**"：
+
+```
+🛑 ======== C盘红线保护区（已自动跳过）========
+
+【系统内核目录】
+  ✓ 已保护: C:\Windows\System32\     (系统核心，绝不触碰)
+  ✓ 已保护: C:\Windows\SysWOW64\     (兼容层，绝不触碰)
+  ✓ 已保护: C:\Windows\WinSxS\       (组件存储，使用 dism 管理)
+  ✓ 已保护: C:\Windows\Boot\         (系统引导，绝不触碰)
+  ✓ 已保护: C:\Windows\INF\          (驱动安装信息)
+
+【系统关键文件】
+  ✓ 已保护: C:\pagefile.sys          (虚拟内存)
+  ✓ 已保护: C:\swapfile.sys          (交换文件)
+  ✓ 已保护: C:\bootmgr               (引导管理器)
+
+【用户数据保护区】
+  ✓ 已保护: C:\Users\*\Documents\    (个人文档)
+  ✓ 已保护: C:\Users\*\Pictures\     (个人图片)
+
+共计保护 [X] 个路径，确保系统绝对安全。
+```
+
+---
+
+### 第二段：✅ 安全自动清理清单
+
+逐项列出可自动清理的内容（含路径、大小、清理方法），然后自动执行：
+
+```
+✅ ======== 安全自动清理清单 ========
+
+[1/X] C:\Windows\Temp\
+       路径: C:\Windows\Temp\*
+       扫描结果: [X.XX] GB，[N] 个文件
+       风险等级: ✅ 安全（系统临时文件）
+       清理方法: del /q /s C:\Windows\Temp\*
+       状态: 正在清理...
+
+[2/X] C:\Users\[用户名]\AppData\Local\Temp\
+       路径: C:\Users\*\AppData\Local\Temp\*
+       扫描结果: [X.XX] GB，[N] 个文件
+       风险等级: ✅ 安全（用户临时文件）
+       清理方法: del /q /s C:\Users\[用户名]\AppData\Local\Temp\*
+       状态: 正在清理...
+
+... (逐项列出所有安全可清理项目并自动执行)
+
+---
+✅ 自动清理完成！
+   共清理 [N] 个项目
+   释放空间: [X.XX] GB
+```
+
+---
+
+### 第三段：⚠️ 高危谨慎清单
+
+逐条列出需人工确认的项目，包含完整风险说明：
+
+```
+⚠️ ======== 高危谨慎清单（必须人工确认）========
+
+⚠️ [1/X] 休眠文件 hiberfil.sys
+   路径: C:\hiberfil.sys
+   占用空间: [X.XX] GB
+   风险等级: ⚠️ 谨慎操作
+   删除后果: 关闭休眠功能，系统将无法使用"快速启动"和"休眠"模式
+             笔记本用户可能影响：合盖休眠、电池低电量自动休眠
+   推荐操作: 台式机 → 可关闭休眠释放空间
+            笔记本 → 建议保留
+   清理命令: powercfg /h off
+   ❓ 是否需要处理此项？(输入"确认删除 [编号]" 继续)
+
+⚠️ [2/X] 系统还原点
+   占用空间: [X.XX] GB
+   风险等级: ⚠️ 谨慎操作
+   删除后果: 删除后无法回滚系统状态，如遇驱动/软件问题无法快速恢复
+   推荐操作: 保留最近 1 个还原点，删除旧的
+   清理方法: 系统属性 → 系统保护 → 配置 → 删除
+   ❓ 是否需要处理此项？(输入"确认删除 [编号]" 继续)
+
+⚠️ [3/X] Windows.old 旧系统备份
+   路径: C:\Windows.old\
+   占用空间: [X.XX] GB
+   风险等级: ⚠️ 谨慎操作
+   删除后果: 删除后将无法回滚到上一个 Windows 版本
+   前置条件: 确认当前系统已稳定运行 ≥ 10 天
+   推荐操作: 系统稳定 → 可删除释放 10-30 GB
+   清理方法: 磁盘清理 → 清理系统文件 → 以前的 Windows 安装
+   ❓ 是否需要处理此项？(输入"确认删除 [编号]" 继续)
+
+... (逐条列出所有高危项目)
+
+---
+⚠️ 以上 [N] 个高危项目等待您的确认。
+   如确认清理，请回复各项目的 "确认删除 [编号]"
+   或回复 "全部确认" 处理所有高危项目
+   或回复 "全部跳过" 保留所有高危项目
+```
+
+---
+
+### 第四段：📖 Windows 官方磁盘清理教程
+
+无论是否自动清理，都输出完整的官方磁盘清理新手教程：
+
+```
+📖 ======== Windows 官方磁盘清理完整教程 ========
+
+【方法一：磁盘清理工具（推荐新手）】
+
+步骤 1: 按 Win + R，输入 cleanmgr，回车
+步骤 2: 选择 C 盘，点击"确定"
+步骤 3: 系统自动扫描可释放空间（约 1-3 分钟）
+步骤 4: 在"要删除的文件"列表中，勾选以下项目：
+        ☑ Windows 更新清理        (可释放 2-20 GB)
+        ☑ Windows 更新日志文件     (可释放 0.5-2 GB)
+        ☑ 下载的程序文件           (可释放 0.1-1 GB)
+        ☑ 临时 Internet 文件       (可释放 0.5-5 GB)
+        ☑ 系统错误内存转储文件      (可释放 1-50 GB)
+        ☑ 系统错误报告文件         (可释放 0.5-5 GB)
+        ☑ 传递优化文件            (可释放 1-10 GB)
+        ☑ 设备驱动程序包           (可释放 0.5-3 GB)
+        ☑ 缩略图                  (可释放 0.5-5 GB)
+        ☑ 回收站                  (不定)
+        ☑ 临时文件                (可释放 1-20 GB)
+步骤 5: 点击"清理系统文件"按钮（需管理员权限）
+步骤 6: 再次选择 C 盘，等待重新扫描
+步骤 7: 在新增的项目中，额外勾选：
+        ☑ 以前的 Windows 安装     (可释放 10-30 GB，⚠️ 无法回滚版本)
+步骤 8: 点击"确定" → "删除文件"，等待完成
+
+【方法二：存储感知（自动定期清理）】
+
+步骤 1: 打开"设置" (Win + I)
+步骤 2: 系统 → 存储
+步骤 3: 打开"存储感知"开关
+步骤 4: 点击"配置存储感知或立即运行"
+步骤 5: 设置：
+        · 存储感知运行时间：每天
+        · 回收站文件保留：14 天
+        · 下载文件夹文件：30 天（⚠️ 按需设置）
+        · OneDrive 内容：本地文件 → 仅联机 30 天
+步骤 6: 点击"立即运行存储感知"立即清理
+
+【方法三：DISM 命令行（进阶用户）】
+
+以管理员身份打开命令提示符：
+  # 分析组件存储大小
+  dism /Online /Cleanup-Image /AnalyzeComponentStore
+
+  # 清理系统组件存储
+  dism /Online /Cleanup-Image /StartComponentCleanup
+
+  # 重置组件存储基准（释放更多空间）
+  dism /Online /Cleanup-Image /StartComponentCleanup /ResetBase
+
+  # 清理 WinSxS 备份
+  dism /Online /Cleanup-Image /SPSuperseded
+
+【方法四：压缩系统文件 (CompactOS)】
+
+以管理员身份打开命令提示符：
+  # 压缩操作系统二进制文件（压缩率约 2:1）
+  compact.exe /CompactOS:always
+  # 预计可节省 2-4 GB，对 SSD 几乎无性能影响
+  # 恢复: compact.exe /CompactOS:never
+```
+
+---
+
+### 第五段：🔍 C盘超大文件快速定位
+
+教用户如何自行查找 C 盘中的大型文件：
+
+```
+🔍 ======== C盘超大文件快速定位方法 ========
+
+【方法一：PowerShell 命令（最快速）】
+
+以管理员身份打开 PowerShell，执行：
+
+```powershell
+# 查找 C 盘根目录下大于 100MB 的所有文件（按大小降序，前 50 个）
+Get-ChildItem -Path C:\ -Recurse -ErrorAction SilentlyContinue `
+  | Where-Object { $_.Length -gt 100MB } `
+  | Sort-Object Length -Descending `
+  | Select-Object -First 50 `
+  | Format-Table Name, @{N='Size(GB)';E={[math]::Round($_.Length/1GB,2)}}, FullName -AutoSize
+```
+
+```powershell
+# 查看 C 盘各一级文件夹占用空间
+Get-ChildItem -Path C:\ -Directory -ErrorAction SilentlyContinue `
+  | ForEach-Object {
+      $size = (Get-ChildItem $_.FullName -Recurse -ErrorAction SilentlyContinue `
+        | Measure-Object -Property Length -Sum).Sum / 1GB
+      [PSCustomObject]@{Folder=$_.Name; SizeGB=[math]::Round($size,2)}
+    } | Sort-Object SizeGB -Descending
+```
+
+【方法二：文件资源管理器搜索】
+
+步骤 1: 打开 C 盘
+步骤 2: 在右上角搜索框中输入: size:>1GB
+        （搜索大于 1GB 的文件）
+        size:>500MB → 搜索大于 500MB 的文件
+        size:huge  → 搜索 1-16 GB 的文件
+        size:gigantic → 搜索大于 16 GB 的文件
+步骤 3: 点击"搜索"标签 → 按"大小"排序
+步骤 4: 右键文件 → 属性，确认用途后再决定是否移动/删除
+
+【方法三：设置 → 存储 → 查看占用详情】
+
+步骤 1: 设置 (Win + I) → 系统 → 存储 → C盘
+步骤 2: 查看各类文件占用情况：
+        · 系统和保留
+        · 应用和功能   → 可查看各软件大小，可卸载不需要的软件
+        · 文档         → 查看文档占用
+        · 图片
+        · 临时文件     → 可直接在此清理
+        · 其他         → 手动排查大文件夹
+```
+
+---
+
+### 第六段：📋 最终汇总报告
+
+```
+📋 ======== C盘清理 最终汇总报告 ========
+
+📅 清理日期: [YYYY-MM-DD HH:MM]
+💻 操作系统: Windows [版本号]
+📊 清理前 C 盘空间: [已用] / [总容量] (剩余 [X.XX] GB)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ 已自动清理完成:
+  [1] C:\Windows\Temp\           → 释放 [X.XX] GB  ✓
+  [2] 用户临时文件                 → 释放 [X.XX] GB  ✓
+  [3] Windows 更新缓存            → 释放 [X.XX] GB  ✓
+  [4] 浏览器缓存                  → 释放 [X.XX] GB  ✓
+  [5] 系统错误转储                → 释放 [X.XX] GB  ✓
+  [6] 缩略图缓存                  → 释放 [X.XX] GB  ✓
+  [7] 日志文件                    → 释放 [X.XX] GB  ✓
+  [8] 回收站清空                  → 释放 [X.XX] GB  ✓
+  ─────────────────────────────────────────
+  合计自动释放: [X.XX] GB ✓
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️ 待用户确认的高危项目:
+  [ ] 休眠文件 hiberfil.sys      → 可释放 [X.XX] GB
+  [ ] 系统还原点                  → 可释放 [X.XX] GB
+  [ ] Windows.old                → 可释放 [X.XX] GB
+  [ ] 下载文件夹                  → 可释放 [X.XX] GB
+  ─────────────────────────────────────────
+  待确认可释放: [X.XX] GB ⚠️
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 清理后 C 盘: [已用] / [总容量] (剩余 [X.XX] GB)
+📈 C 盘剩余空间增加: +[X.XX] GB
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔧 长期维护建议:
+  1. 每周运行一次 Windows 自带磁盘清理 (cleanmgr)
+  2. 开启存储感知自动清理（设置 → 系统 → 存储）
+  3. 大型文件/软件尽量安装到 D 盘或其他盘
+  4. 桌面只放快捷方式，大文件存放到其他盘
+  5. 每季度检查一次 C 盘空间使用情况
+  6. 定期清理浏览器缓存和下载文件
+  7. 关闭不需要的软件开机自启（任务管理器 → 启动）
+  8. 微信/QQ 等聊天软件的文件目录迁移到其他盘
+  9. OneDrive/网盘同步文件夹迁移到其他盘
+  10. 系统大版本更新后及时清理 Windows.old
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🛡️ 安全声明:
+  本次清理过程中，所有核心系统文件均已自动跳过保护。
+  如有任何异常，可通过回收站（已清空内容除外）或系统还原恢复。
+  本工具仅使用 Windows 官方自带命令，不会对系统造成不可逆损害。
+```
+
+---
+
+## ⚙️ 执行指令生成器（供 AI 客户端执行）
+
+### 管理员权限检测
+
+```batch
+:: 检测是否以管理员身份运行
+net session >nul 2>&1
+if %errorlevel% neq 0 (
+    echo [警告] 当前未以管理员身份运行，部分清理操作将受限
+    echo [建议] 请右键选择 "以管理员身份运行" 后重新执行
+)
+```
+
+### Phase 1: 扫描命令集
+
+```batch
+:: ====== 扫描 C 盘空间使用概况 ======
+:: 收集磁盘基本信息
+wmic logicaldisk where "DeviceID='C:'" get Size,FreeSpace /format:list
+
+:: 扫描各主要目录占用
+dir C:\ /AD 2>nul
+
+:: ====== 统计各类可清理文件大小 ======
+:: 系统临时文件
+dir /s C:\Windows\Temp\ 2>nul | find "File(s)"
+
+:: 用户临时文件
+dir /s "%TEMP%" 2>nul | find "File(s)"
+
+:: Windows 更新缓存
+dir /s C:\Windows\SoftwareDistribution\Download\ 2>nul | find "File(s)"
+
+:: 错误报告
+dir /s C:\ProgramData\Microsoft\Windows\WER\ 2>nul | find "File(s)"
+
+:: 日志文件
+dir /s C:\Windows\Logs\ 2>nul | find "File(s)"
+
+:: ====== 扫描大型文件 ======
+:: 查找 C 盘根目录大于 500MB 的文件
+forfiles /P C:\ /S /M *.* /C "cmd /c if @fsize gtr 524288000 echo @fsize bytes @path" 2>nul
+
+:: 查找休眠文件
+dir C:\hiberfil.sys /AH 2>nul
+
+:: 查找虚拟内存文件
+dir C:\pagefile.sys /AH 2>nul
+
+:: 查找 Windows.old
+dir C:\Windows.old 2>nul
+```
+
+### Phase 4A: 自动清理命令集
+
+```batch
+:: ====== 安全清理（按顺序执行）======
+
+:: 1. 清理系统临时文件
+echo [1] 清理系统临时文件...
+del /q /f /s C:\Windows\Temp\*.* 2>nul
+for /d %%i in (C:\Windows\Temp\*) do rd /s /q "%%i" 2>nul
+
+:: 2. 清理用户临时文件
+echo [2] 清理用户临时文件...
+del /q /f /s "%TEMP%\*.*" 2>nul
+for /d %%i in ("%TEMP%\*") do rd /s /q "%%i" 2>nul
+
+:: 3. 清理 Windows 更新缓存
+echo [3] 清理 Windows 更新下载缓存...
+net stop wuauserv 2>nul
+del /q /f /s C:\Windows\SoftwareDistribution\Download\*.* 2>nul
+net start wuauserv 2>nul
+
+:: 4. 清理系统错误转储
+echo [4] 清理系统错误内存转储...
+del /q /f C:\Windows\MEMORY.DMP 2>nul
+del /q /f /s C:\Windows\Minidump\*.* 2>nul
+
+:: 5. 清理错误报告
+echo [5] 清理系统错误报告...
+del /q /f /s C:\ProgramData\Microsoft\Windows\WER\*.* 2>nul
+
+:: 6. 清理系统日志
+echo [6] 清理系统日志文件...
+del /q /f /s C:\Windows\Logs\CBS\*.log 2>nul
+del /q /f /s C:\Windows\Logs\DISM\*.log 2>nul
+
+:: 7. 清理预读取文件
+echo [7] 清理预读取文件...
+del /q /f /s C:\Windows\Prefetch\*.* 2>nul
+
+:: 8. 清理传递优化缓存
+echo [8] 清理传递优化缓存...
+del /q /f /s C:\Windows\ServiceProfiles\NetworkService\AppData\Local\Microsoft\Windows\DeliveryOptimization\Cache\*.* 2>nul
+
+:: 9. 刷新 DNS 缓存
+echo [9] 刷新 DNS 缓存...
+ipconfig /flushdns
+
+:: 10. 清空回收站
+echo [10] 清空回收站...
+rd /s /q C:\$Recycle.Bin 2>nul
+
+:: 11. 磁盘清理工具（静默清理预设）
+echo [11] 运行磁盘清理...
+cleanmgr /sagerun:1 2>nul || cleanmgr /verylowdisk
+
+:: 12. DISM 组件清理
+echo [12] DISM 组件存储清理...
+dism /Online /Cleanup-Image /StartComponentCleanup /Quiet
+
+echo.
+echo ✓ 安全清理阶段完成！
+```
+
+### Phase 4B: 高危项目处理命令（需确认后执行）
+
+```batch
+:: ====== 以下命令仅用户确认后执行 ======
+
+:: 关闭休眠（需要确认）
+:: powercfg /h off
+
+:: 删除系统还原点（需要确认）
+:: vssadmin delete shadows /for=C: /oldest
+:: vssadmin delete shadows /for=C: /all
+
+:: 清理 Windows.old（需要确认，推荐使用磁盘清理）
+:: cleanmgr /sageset:99
+:: cleanmgr /sagerun:99
+:: takeown /F C:\Windows.old\* /R /A /D Y >nul
+:: rd /s /q C:\Windows.old
+```
+
+---
+
+## 🧠 智能交互决策树
+
+```
+用户输入触发词
+    │
+    ├─→ 检测到 "清理C盘" / "C盘满了" 等
+    │       │
+    │       ├─→ 用户提供了具体要求（如"清理临时文件"）
+    │       │       → 定位到对应分类，执行专项清理
+    │       │
+    │       └─→ 用户只是笼统求助
+    │               → 执行完整 Phase 0 → 1 → 2 → 3 → 4A → 5
+    │
+    ├─→ 用户说 "确认删除 [编号]"
+    │       → 执行对应高危项目的清理操作
+    │
+    ├─→ 用户说 "全部确认"
+    │       → 逐条执行所有高危项目清理
+    │
+    ├─→ 用户说 "全部跳过" / "不需要"
+    │       → 跳过高危项目，直接进入 Phase 5 汇总
+    │
+    └─→ 用户问 "XXX 能删吗"
+            → 查三级分类表，给出风险判断和建议
+```
+
+---
+
+## 🛡️ 系统文件保护黑名单（正则匹配）
+
+以下模式匹配的文件/目录**在任何情况下都不可删除**：
+
+```regex
+# 绝对保护模式
+C:\\Windows\\System32
+C:\\Windows\\SysWOW64
+C:\\Windows\\WinSxS\\(?!.*\\Temp)
+C:\\Windows\\Boot
+C:\\Windows\\INF
+C:\\Windows\\SystemResources
+C:\\Windows\\servicing
+C:\\Windows\\System32\\drivers
+C:\\Windows\\System32\\DriverStore
+C:\\Windows\\Fonts
+C:\\Windows\\Resources
+C:\\Windows\\AppPatch
+C:\\Windows\\ELAMBKUP
+C:\\Windows\\L2Schemas
+C:\\Windows\\LiveKernelReports
+C:\\Windows\\ModemLogs
+C:\\Windows\\PLA
+C:\\Windows\\Registration
+C:\\Windows\\security
+C:\\Windows\\ShellComponents
+C:\\Windows\\SKB
+C:\\Windows\\TAPI
+C:\\Windows\\Web
+
+# 核心文件保护
+C:\\bootmgr
+C:\\BOOTNXT
+C:\\pagefile\\.sys
+C:\\swapfile\\.sys
+C:\\hiberfil\\.sys
+
+# 用户数据保护（不自动删除）
+C:\\Users\\.*\\Documents
+C:\\Users\\.*\\Pictures
+C:\\Users\\.*\\Music
+C:\\Users\\.*\\Videos
+C:\\Users\\.*\\Favorites
+C:\\Users\\.*\\Contacts
+C:\\Users\\.*\\Links
+C:\\Users\\.*\\Saved Games
+C:\\Users\\.*\\Searches
+C:\\Users\\.*\\AppData\\Roaming\\Microsoft
+```
+
+---
+
+## 📝 跨模型兼容适配
+
+### Claude 专用指令
+
+```
+当用户触发清理请求时：
+1. 如果有 Bash 工具权限 → 执行扫描和自动清理命令
+2. 如果没有命令执行权限 → 输出六段式报告 + 手把手教程
+3. 使用 AskUserQuestion 请求高危项目确认
+```
+
+### Cursor 专用指令
+
+```
+1. 利用 Cursor 的终端权限执行 PowerShell/Batch 命令
+2. 清理结果实时输出到终端
+3. 高危项目通过编辑器内联提示确认
+```
+
+### OpenAI Codex 专用指令
+
+```
+1. 生成可直接复制执行的完整批处理脚本
+2. 无需命令执行权限，生成即用
+3. 附带详细的注释说明每个命令的作用
+```
+
+### 通用兼容模式
+
+```
+当无法确定客户端类型时：
+1. 执行完整扫描分析（输出扫描命令 + 预期结果说明）
+2. 输出六段式报告（完整文本文档）
+3. 生成独立的批处理脚本（用户可自行保存为 .bat 运行）
+4. 高危项目用醒目标记提醒
+```
+
+---
+
+## 🔄 版本历史
+
+| 版本 | 日期 | 更新内容 |
+|------|------|----------|
+| V1.0 | 2024-07 | 初始开源版本，完整三级分类体系，六段式输出 |
+
+---
+
+## 📄 许可证
+
+```
+MIT License
+
+Copyright (c) 2024 Open Source Community
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+---
+
+## ⚠️ 免责声明
+
+```
+本 Skill 仅使用 Windows 官方自带工具执行清理操作，不修改系统注册表，不删除系统核心文件。
+使用本 Skill 产生的任何后果由用户自行承担。建议在执行高危操作前备份重要数据。
+
+"先扫描、后分级、再清理"是最高原则。当你不确定某个文件是否应该删除时，
+保持不动是最好的选择。宁可少清理 10 GB，不可误删 1 个关键文件。
+```
