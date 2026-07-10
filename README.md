@@ -4,13 +4,7 @@
 
 <br>
 
-<p align="center">
-  <a href="https://github.com/Shirleypp012/windows-cdisk-clean-skill"><img src="https://img.shields.io/badge/version-1.0.0-2563EB?style=flat-square" alt="Version"></a>
-  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-22C55E?style=flat-square" alt="License"></a>
-  <img src="https://img.shields.io/badge/platform-Windows%2010%2F11-0078D6?style=flat-square" alt="Platform">
-  <img src="https://img.shields.io/badge/AI-CLAUDE%20%7C%20Cursor%20%7C%20Codex-8B5CF6?style=flat-square" alt="AI Compatible">
-  <a href="https://github.com/Shirleypp012/windows-cdisk-clean-skill/stargazers"><img src="https://img.shields.io/github/stars/Shirleypp012/windows-cdisk-clean-skill?style=flat-square&color=F59E0B" alt="Stars"></a>
-</p>
+
 
 <br>
 
